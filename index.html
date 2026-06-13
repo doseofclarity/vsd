@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ventricular Septal Defect (VSD) | Heart Hole Explained Simply | MCN Pillitteri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .transition-all { transition: all 0.3s ease; }
+        .recall-mode .reveal-text {
+            background-color: #cbd5e1;
+            color: transparent;
+            border-radius: 0.375rem;
+            padding: 0 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            box-shadow: inset 0 0 0 1px #94a3b8;
+        }
+        .recall-mode .reveal-text:hover,
+        .recall-mode .reveal-text.revealed {
+            background-color: #fef08a;
+            color: #1e293b;
+            box-shadow: none;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 8px; }
+        .content-section { animation: fade 0.3s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .quiz-feedback-correct { background-color: #dcfce7; border-left: 4px solid #22c55e; }
+        .quiz-feedback-wrong { background-color: #fee2e2; border-left: 4px solid #ef4444; }
+        .locked-section { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+        .flashcard { background: #fff; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transition: transform 0.2s; cursor: pointer; border: 1px solid #e2e8f0; }
+        .flashcard:hover { transform: translateY(-5px); }
+        .heart-simple { background: #ffe4e6; border-radius: 50%; padding: 10px; display: inline-block; }
+        .analogy-box { background: #fef3c7; border-left: 8px solid #f59e0b; padding: 1rem; border-radius: 1rem; margin: 1rem 0; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { vsd: { light: '#ffe4e6', DEFAULT: '#e11d48', dark: '#881337' } } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col md:flex-row font-sans text-slate-800 overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-vsd-dark text-white p-4 flex justify-between items-center shadow-md z-30 shrink-0">
+        <button onclick="toggleMobileMenu()" class="text-white focus:outline-none z-40">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+        <h1 class="font-bold text-lg absolute left-1/2 transform -translate-x-1/2 pointer-events-none">
+            <i class="fa-solid fa-heart-crack mr-2"></i> VSD
+        </h1>
+        <div class="w-8"></div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-80 bg-white shadow-2xl h-full absolute md:relative z-30 transition-transform duration-300 shrink-0 border-r border-slate-200">
+        <div class="p-6 bg-gradient-to-br from-vsd-dark to-vsd text-white hidden md:block shrink-0">
+            <h1 class="font-black text-2xl tracking-wide"><i class="fa-solid fa-heart-pulse mr-2"></i> Ventricular Septal Defect</h1>
+            <p class="text-sm text-pink-200 mt-1 font-medium">The most common congenital heart defect | Pillitteri</p>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 text-sm font-medium">
+                <li><button onclick="showSection('home')" id="btn-home" class="nav-btn w-full text-left px-6 py-3 bg-vsd-light text-vsd-dark border-r-4 border-vsd-dark transition-colors"><i class="fa-solid fa-house w-6 nav-icon"></i><i class="fa-solid fa-lock w-6 hidden"></i> Home / Start</button></li>
+                <li><button onclick="showSection('simple')" id="btn-simple" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-face-smile w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> VSD Like You're 5</button></li>
+                <li><button onclick="showSection('definition')" id="btn-definition" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-book-open w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Definition & Epidemiology</button></li>
+                <li><button onclick="showSection('pathophysiology')" id="btn-pathophysiology" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-chart-line w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> How It Works (Pathophysiology)</button></li>
+                <li><button onclick="showSection('clinical')" id="btn-clinical" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-stethoscope w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Signs & Symptoms</button></li>
+                <li><button onclick="showSection('diagnosis')" id="btn-diagnosis" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-microscope w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Diagnosis & Tests</button></li>
+                <li><button onclick="showSection('management')" id="btn-management" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-hand-holding-medical w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Treatment & Nursing Care</button></li>
+                <li><button onclick="showSection('complications')" id="btn-complications" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-triangle-exclamation w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Complications & Prognosis</button></li>
+                <li><button onclick="showSection('prevention')" id="btn-prevention" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-shield-heart w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Prevention & Family Education</button></li>
+                <li><button onclick="showSection('flashcards')" id="btn-flashcards" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-200 mt-2 locked-section"><i class="fa-solid fa-cards w-6 text-vsd nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Flashcards & Mnemonics</button></li>
+                <li><button onclick="showSection('final_quiz_sec')" id="btn-final_quiz_sec" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-graduation-cap w-6 text-amber-500 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Final 50‑Item Exam</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="flex-1 h-full overflow-y-auto bg-slate-100 relative w-full">
+        <div class="fixed top-16 md:top-4 right-4 md:right-8 z-40 flex items-center bg-white/90 backdrop-blur px-4 py-3 rounded-full shadow-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleRecallMode()">
+            <span class="mr-3 text-sm font-bold text-slate-700 hidden md:inline"><i class="fa-solid fa-brain text-vsd mr-1"></i> Active Recall</span>
+            <button id="recall-toggle" class="w-12 h-6 bg-slate-300 rounded-full relative transition-colors duration-300 focus:outline-none shadow-inner pointer-events-none">
+                <div id="recall-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform duration-300 shadow"></div>
+            </button>
+        </div>
+
+        <div class="p-4 md:p-8 max-w-6xl mx-auto pb-32">
+            <!-- HOME SECTION -->
+            <section id="home" class="content-section flex flex-col items-center justify-center min-h-[80vh] text-center block">
+                <div class="bg-gradient-to-br from-slate-800 to-vsd-dark text-white rounded-3xl shadow-2xl p-10 md:p-16 w-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 text-white opacity-5 pointer-events-none"><i class="fa-solid fa-heart-pulse text-[20rem]"></i></div>
+                    <div class="relative z-10">
+                        <div class="bg-white/10 backdrop-blur-sm inline-block p-4 rounded-full text-pink-300 mb-6 shadow-sm border border-white/20">
+                            <i class="fa-solid fa-hand-holding-heart text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-300 mb-2 uppercase tracking-widest">Maternal & Child Health Nursing</h3>
+                        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight drop-shadow-md">Ventricular Septal Defect (VSD)</h1>
+                        <div class="bg-white/10 backdrop-blur inline-block px-6 py-3 rounded-full mb-10 border border-white/20">
+                            <p class="text-lg text-white font-medium">"A hole in the heart's wall – the most common congenital heart defect." – Pillitteri</p>
+                        </div>
+                        <button onclick="unlockFirstSection()" class="bg-slate-600 hover:bg-slate-500 text-white font-black py-4 px-10 rounded-full shadow-xl transition-transform hover:scale-105 text-lg flex items-center mx-auto focus:outline-none">
+                            Start Learning VSD <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- "VSD Like You're 5" – very simple analogy -->
+            <section id="simple" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-face-smile text-vsd mr-4"></i> VSD Explained Like You Are 5 Years Old</h2>
+                    <div class="analogy-box">
+                        <p class="text-lg font-bold">🧸 Imagine your heart is a house with two rooms:</p>
+                        <p class="mt-2">• <span class="font-bold text-red-600">Left room</span> (Left ventricle) – has <span class="text-blue-600">blue blood (oxygen‑rich)</span><br>
+                        • <span class="font-bold text-red-600">Right room</span> (Right ventricle) – has <span class="text-green-700">red blood (oxygen‑poor)</span><br>
+                        • Between the rooms there is a <span class="text-yellow-600">wall (septum)</span>.</p>
+                        <p class="mt-3 font-bold">🔴 VSD means there is a <span class="text-amber-600">hole in that wall</span>.</p>
+                        <p>💨 So some of the <span class="text-blue-600">blue blood (oxygen‑rich)</span> leaks into the <span class="text-green-700">red blood side</span>. That means the body doesn't get enough oxygen, and the heart has to work much harder! ❤️💦</p>
+                        <p class="mt-2 text-sm">✅ The good news: many holes get smaller by themselves as a child grows. Doctors can also fix them with medicine or a small surgery.</p>
+                    </div>
+                    <div class="bg-pink-50 p-5 rounded-xl text-center mt-4">
+                        <i class="fa-solid fa-heart text-6xl text-vsd"></i>
+                        <p class="font-bold mt-2">A simple drawing of the heart with a hole</p>
+                        <div class="flex justify-center gap-8 mt-2">
+                            <div><span class="inline-block w-4 h-4 bg-blue-600 rounded-full"></span> Oxygen-rich blood</div>
+                            <div><span class="inline-block w-4 h-4 bg-green-700 rounded-full"></span> Oxygen-poor blood</div>
+                        </div>
+                        <svg width="200" height="150" viewBox="0 0 200 150" class="mx-auto mt-3">
+                            <path d="M100,40 C120,20 160,30 160,70 C160,110 100,140 100,140 C100,140 40,110 40,70 C40,30 80,20 100,40Z" fill="#ffe4e6" stroke="#e11d48" stroke-width="2"/>
+                            <line x1="100" y1="40" x2="100" y2="140" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5,5"/>
+                            <circle cx="100" cy="85" r="12" fill="#fef08a" stroke="#b45309" stroke-width="2"/>
+                            <text x="100" y="90" text-anchor="middle" font-size="10" fill="#b45309" font-weight="bold">HOLE</text>
+                            <text x="70" y="60" text-anchor="middle" font-size="9" fill="#2563eb">O₂</text>
+                            <text x="130" y="60" text-anchor="middle" font-size="9" fill="#166534">O₂‑poor</text>
+                        </svg>
+                    </div>
+                    <button onclick="openQuiz('simple')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 1. Definition & Epidemiology -->
+            <section id="definition" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-book-open text-vsd mr-4"></i> Definition & Epidemiology</h2>
+                    <p><strong>Ventricular Septal Defect (VSD)</strong> – an abnormal opening (hole) in the interventricular septum, allowing blood to flow from the left ventricle to the right ventricle (left‑to‑right shunt).</p>
+                    <div class="grid md:grid-cols-2 gap-5 mt-4">
+                        <div class="bg-slate-50 p-4 rounded-xl"><strong>📊 Frequency</strong><br><span class="reveal-text">Most common congenital heart defect (25‑30% of all CHD). Occurs in 1.5‑3.5 per 1,000 live births.</span></div>
+                        <div class="bg-slate-50 p-4 rounded-xl"><strong>🇵🇭 Philippines</strong><br><span class="reveal-text">VSD accounts for ~30% of all congenital heart disease cases in Philippine hospitals. Estimated 4,000‑5,000 affected newborns annually.</span></div>
+                    </div>
+                    <canvas id="vsdChart" width="400" height="200" style="max-width:100%; margin-top:1rem;"></canvas>
+                    <div class="bg-pink-50 p-3 rounded-lg mt-4"><strong>⚠️ Key point:</strong> <span class="reveal-text">Small VSDs may close spontaneously (80% of perimembranous and muscular VSDs). Large VSDs cause heart failure and require intervention.</span></div>
+                    <button onclick="openQuiz('definition')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 2. Pathophysiology (simple diagram) -->
+            <section id="pathophysiology" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-chart-line text-vsd mr-4"></i> How VSD Works (Pathophysiology)</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>🔁 Left-to-right shunt</strong><br><span class="reveal-text">Because left ventricle pressure is higher than right, blood flows from left → right through the hole. This extra volume goes to lungs → pulmonary overcirculation → eventually leads to pulmonary hypertension (Eisenmenger syndrome if untreated).</span></div>
+                        <div><strong>🧬 Types by location:</strong><br><span class="reveal-text">• Perimembranous (80%)<br>• Muscular (5‑20%)<br>• Inlet (rare)<br>• Outlet (subpulmonary)</span></div>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-lg mt-4"><strong>💡 Simple mnemonic:</strong> <span class="reveal-text">"L→R = Leak to Right" – extra blood goes to lungs.</span></div>
+                    <button onclick="openQuiz('pathophysiology')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 3. Clinical Manifestations -->
+            <section id="clinical" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-stethoscope text-vsd mr-4"></i> Signs & Symptoms</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>👶 Small VSD (often asymptomatic)</strong><br><span class="reveal-text">• Loud hologystolic murmur (heard best at left sternal border)<br>• Normal growth, no heart failure</span></div>
+                        <div><strong>❤️ Large VSD (symptoms appear 4‑8 weeks)</strong><br><span class="reveal-text">• Tachypnea, respiratory distress<br>• Poor feeding, failure to thrive<br>• Diaphoresis (sweating) with feeds<br>• Recurrent lung infections<br>• Hepatomegaly, cardiomegaly</span></div>
+                    </div>
+                    <div class="bg-indigo-50 p-3 rounded-lg mt-4"><strong>📌 Classic murmur:</strong> <span class="reveal-text">Harsh, loud, holosystolic murmur at left lower sternal border; often with a thrill.</span></div>
+                    <button onclick="openQuiz('clinical')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 4. Diagnosis -->
+            <section id="diagnosis" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-microscope text-vsd mr-4"></i> Diagnosis & Tests</h2>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>Physical exam:</strong> <span class="reveal-text">Murmur, thrill, possible signs of heart failure.</span></li>
+                        <li><strong>Chest X‑ray:</strong> <span class="reveal-text">Cardiomegaly, increased pulmonary vascular markings.</span></li>
+                        <li><strong>Electrocardiogram (ECG):</strong> <span class="reveal-text">May show biventricular hypertrophy or left atrial enlargement.</span></li>
+                        <li><strong>Echocardiogram (Doppler):</strong> <span class="reveal-text">Gold standard – shows location, size, and hemodynamics.</span></li>
+                        <li><strong>Cardiac catheterization:</strong> <span class="reveal-text">Rarely needed; used to measure pulmonary pressures and Qp/Qs ratio (pulmonary‑to‑systemic flow).</span></li>
+                    </ul>
+                    <div class="bg-green-50 p-3 rounded-lg mt-4"><strong>🔍 Gold standard:</strong> <span class="reveal-text">Echocardiography with color Doppler.</span></div>
+                    <button onclick="openQuiz('diagnosis')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 5. Treatment & Nursing Care -->
+            <section id="management" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-hand-holding-medical text-vsd mr-4"></i> Treatment & Nursing Care</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>💊 Medical management</strong><br><span class="reveal-text">• Diuretics (furosemide) for fluid overload<br>• Digoxin for heart failure<br>• ACE inhibitors to reduce afterload<br>• Nutritional support (high‑calorie formula)</span></div>
+                        <div><strong>⚕️ Surgical closure</strong><br><span class="reveal-text">Indicated for large VSDs, failure to thrive, pulmonary hypertension. Patch closure (pericardial or Dacron) via open heart surgery. Device closure via catheter for some muscular VSDs.</span></div>
+                    </div>
+                    <div class="bg-rose-50 p-3 rounded-lg mt-4"><strong>👩‍⚕️ Nursing priorities:</strong> <span class="reveal-text">Monitor respiratory status, weight, feeding tolerance; prevent infection; educate parents about signs of heart failure; promote bonding; administer medications accurately.</span></div>
+                    <button onclick="openQuiz('management')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 6. Complications & Prognosis -->
+            <section id="complications" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-triangle-exclamation text-vsd mr-4"></i> Complications & Prognosis</h2>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>If untreated large VSD:</strong> <span class="reveal-text">Congestive heart failure, pulmonary hypertension, Eisenmenger syndrome (irreversible pulmonary vascular disease), infective endocarditis.</span></li>
+                        <li><strong>Prognosis:</strong> <span class="reveal-text">Most small VSDs close spontaneously by age 2‑5 years. Surgical repair has >95% success rate; children lead normal lives with regular follow‑up.</span></li>
+                    </ul>
+                    <div class="bg-yellow-50 p-3 rounded-lg mt-4"><strong>⚠️ Eisenmenger syndrome:</strong> <span class="reveal-text">Reversal of shunt (right‑to‑left), cyanosis, clubbing. Prevented by early surgery.</span></div>
+                    <button onclick="openQuiz('complications')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 7. Prevention & Family Education -->
+            <section id="prevention" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-shield-heart text-vsd mr-4"></i> Prevention & Family Education</h2>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>Prenatal:</strong> <span class="reveal-text">Folic acid (400‑800 mcg), avoid teratogens (alcohol, lithium), control maternal diabetes.</span></li>
+                        <li><strong>Postnatal:</strong> <span class="reveal-text">Immunize on schedule (including RSV protection for high‑risk), monitor growth, provide high‑calorie feeding, teach signs of worsening heart failure.</span></li>
+                        <li><strong>Endocarditis prophylaxis:</strong> <span class="reveal-text">Not routinely recommended for isolated VSD unless within 6 months of surgical patch closure or residual defect.</span></li>
+                    </ul>
+                    <div class="bg-purple-50 p-3 rounded-lg mt-4"><strong>📞 Parent teaching mnemonic “W.H.A.L.E.”</strong> – Weight (daily), Heart failure signs (fast breathing, sweating), Alertness (lethargy), Lung infections (prevent), Energy (small frequent feeds).</div>
+                    <button onclick="openQuiz('prevention')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 8. Flashcards & Mnemonics -->
+            <section id="flashcards" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-vsd pb-3"><i class="fa-solid fa-cards text-vsd mr-4"></i> Flashcards & Mnemonics</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-vsd">Q: Most common CHD?</div><div class="flash-answer hidden mt-2">Ventricular Septal Defect (VSD)</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-vsd">Q: Classic murmur in VSD</div><div class="flash-answer hidden mt-2">Harsh, holosystolic murmur at left lower sternal border</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-vsd">Q: Gold standard test for VSD</div><div class="flash-answer hidden mt-2">Echocardiography with Doppler</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-vsd">Q: First sign of large VSD in infants</div><div class="flash-answer hidden mt-2">Tachypnea, poor feeding, failure to thrive (∼4‑8 weeks)</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-vsd">Q: Spontaneous closure rate of small VSD</div><div class="flash-answer hidden mt-2">Up to 80% (especially muscular and perimembranous)</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-vsd">Q: Mnemonic for signs of heart failure in infant</div><div class="flash-answer hidden mt-2">“T.D.S.” – Tachypnea, Diaphoresis, Sweating with feeds</div></div>
+                    </div>
+                    <div class="mt-6 bg-pink-50 p-4 rounded-xl"><strong>🧠 Mnemonics</strong><br><span class="reveal-text">“V.S.D.” – Ventricle, Septal, Defect.<br>“L·R·L” – Left to Right shunt → Lungs overload.<br>“M.U.R.M.U.R.” – Mid‑systolic? No, Hologystolic at Lower sternal border.<br>“W.H.A.L.E.” – Weight, Heart failure signs, Alertness, Lung infections, Energy (parent teaching).</span></div>
+                    <button onclick="openQuiz('flashcards')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Final Exam</button>
+                </div>
+            </section>
+
+            <!-- FINAL EXAM SECTION -->
+            <section id="final_quiz_sec" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center min-h-[60vh] flex flex-col justify-center items-center">
+                    <i class="fa-solid fa-graduation-cap text-8xl text-amber-500 mb-6"></i>
+                    <h2 class="text-4xl font-black text-slate-800 mb-4">Final 50‑Item Exam: VSD</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-2xl">Covers all aspects: definition, epidemiology, pathophysiology, clinical features, diagnosis, treatment, complications, nursing care, and mnemonics. Score ≥75% to pass.</p>
+                    <button onclick="openQuiz('final_quiz')" class="w-full max-w-md bg-slate-800 text-white font-black py-4 rounded-xl shadow-md text-xl">Start Final Exam</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- QUIZ MODAL -->
+    <div id="quiz-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeQuiz()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 id="quiz-title" class="text-3xl font-black text-slate-800 mb-2"></h2>
+            <div id="quiz-questions-container" class="space-y-4 mt-4"></div>
+            <button id="quiz-submit-btn" onclick="submitQuiz()" class="mt-8 w-full bg-vsd text-white font-bold py-4 rounded-xl shadow-lg">Submit Answers</button>
+            <div id="quiz-result-container" class="hidden mt-6 p-4 rounded-xl bg-slate-100"></div>
+        </div>
+    </div>
+
+    <script>
+        // QUIZ DATA (10 questions each for 9 sections, but we'll generate for all)
+        const quizzes = {
+            simple: { title: "VSD Like You're 5", next: "definition", questions: [
+                { q: "In the heart house analogy, the hole is between which two rooms?", options: ["Left and right atria","Left and right ventricles","Atrium and ventricle","Aorta and pulmonary artery"], ans: 1 },
+                { q: "Which blood color (in the analogy) leaks through the hole?", options: ["Red (oxygen‑poor)","Blue (oxygen‑rich)","Green","Yellow"], ans: 1 },
+                { q: "What happens to the body when blood leaks through the hole?", options: ["Gets too much oxygen","Gets less oxygen and heart works harder","Nothing","Becomes stronger"], ans: 1 },
+                { q: "Can small VSD holes close by themselves?", options: ["Never","Sometimes, up to 80%","Always","Only with medicine"], ans: 1 },
+                { q: "What do doctors use to fix a VSD?", options: ["A band‑aid","Surgery or a catheter device","Only vitamins","Nothing"], ans: 1 }
+            ] },
+            definition: { title: "Definition & Epidemiology", next: "pathophysiology", questions: [
+                { q: "VSD is a hole in:", options: ["Atrial septum","Ventricular septum","Aortic valve","Pulmonary artery"], ans: 1 },
+                { q: "VSD accounts for what percentage of congenital heart defects?", options: ["10‑15%","25‑30%","40‑50%","5‑10%"], ans: 1 },
+                { q: "In the Philippines, VSD is the most common CHD. Estimated annual affected newborns?", options: ["500‑1000","4,000‑5,000","10,000","20,000"], ans: 1 },
+                { q: "Which type of VSD is most common?", options: ["Muscular","Perimembranous","Inlet","Outlet"], ans: 1 },
+                { q: "The direction of shunting in VSD is:", options: ["Right to left","Left to right","Bidirectional","No shunt"], ans: 1 }
+            ] },
+            pathophysiology: { title: "Pathophysiology", next: "clinical", questions: [
+                { q: "Why does left‑to‑right shunt occur?", options: ["Left ventricle pressure > right ventricle","Right pressure > left","Equal pressures","Aorta pressure"], ans: 0 },
+                { q: "Extra blood goes to the lungs → leads to:", options: ["Pulmonary overcirculation","Pulmonary hypoplasia","Pneumothorax","Atelectasis"], ans: 0 },
+                { q: "What is Eisenmenger syndrome?", options: ["Reversal of shunt with cyanosis","Spontaneous closure","Heart failure","Endocarditis"], ans: 0 },
+                { q: "The most common location of VSD is:", options: ["Muscular","Perimembranous","Inlet","Outlet"], ans: 1 },
+                { q: "Small VSDs cause:", options: ["Severe heart failure","Loud murmur but usually asymptomatic","Cyanosis","Shock"], ans: 1 }
+            ] },
+            clinical: { title: "Signs & Symptoms", next: "diagnosis", questions: [
+                { q: "Characteristic murmur of VSD is:", options: ["Systolic ejection murmur","Hologystolic murmur","Diastolic murmur","Continuous murmur"], ans: 1 },
+                { q: "A large VSD typically presents with symptoms at:", options: ["Birth","4‑8 weeks of age","6 months","1 year"], ans: 1 },
+                { q: "Which sign indicates heart failure in an infant with VSD?", options: ["Tachypnea, diaphoresis with feeds","Weight gain","Lethargy only","Cyanosis"], ans: 0 },
+                { q: "A palpable thrill in VSD is felt at:", options: ["Apex","Left lower sternal border","Right upper sternal border","Back"], ans: 1 },
+                { q: "Infants with large VSD often have:", options: ["Failure to thrive","Obesity","Hyperactivity","Seizures"], ans: 0 }
+            ] },
+            diagnosis: { title: "Diagnosis", next: "management", questions: [
+                { q: "Gold standard test for VSD is:", options: ["Chest X‑ray","ECG","Echocardiography","Cardiac catheterization"], ans: 2 },
+                { q: "Chest X‑ray in large VSD shows:", options: ["Cardiomegaly, increased pulmonary markings","Normal heart","Decreased pulmonary markings","Pneumothorax"], ans: 0 },
+                { q: "Which test measures Qp/Qs ratio?", options: ["Echocardiogram","Cardiac catheterization","Chest X‑ray","MRI"], ans: 1 },
+                { q: "ECG in a large VSD may show:", options: ["Left atrial enlargement or biventricular hypertrophy","Normal","Right axis deviation","SVT"], ans: 0 },
+                { q: "What does color Doppler echocardiography show?", options: ["Direction and velocity of shunt","Only anatomy","Only wall motion","Only valves"], ans: 0 }
+            ] },
+            management: { title: "Treatment & Nursing Care", next: "complications", questions: [
+                { q: "Medical treatment for heart failure in VSD includes:", options: ["Digoxin, diuretics, ACE inhibitors","Only antibiotics","Only oxygen","None"], ans: 0 },
+                { q: "Indication for surgical closure of VSD includes:", options: ["Failure to thrive, pulmonary hypertension","Small asymptomatic VSD","All VSDs","Age >10 years"], ans: 0 },
+                { q: "Surgical repair of VSD involves:", options: ["Patch closure","Valve replacement","Stent","Balloon dilation"], ans: 0 },
+                { q: "Nursing care before surgery includes:", options: ["Monitor weight, feeding, respiratory status","Restrict all fluids","Isolate the infant","Give only IV fluids"], ans: 0 },
+                { q: "After VSD repair, parents should be taught:", options: ["Signs of infection, follow‑up","No follow‑up needed","Stop all medications","Avoid all vaccines"], ans: 0 }
+            ] },
+            complications: { title: "Complications & Prognosis", next: "prevention", questions: [
+                { q: "Untreated large VSD can lead to:", options: ["Eisenmenger syndrome","Hypertension only","Arrhythmia only","Stroke"], ans: 0 },
+                { q: "Spontaneous closure rate of small VSD by age 2‑5 years is:", options: ["<10%","~50%","~80%","100%"], ans: 2 },
+                { q: "Eisenmenger syndrome is characterized by:", options: ["Cyanosis, clubbing, reversed shunt","Normal color","Increased exercise tolerance","Hypotension"], ans: 0 },
+                { q: "Surgical repair of VSD has a success rate of:", options: ["<70%","80‑85%",">95%","50%"], ans: 2 },
+                { q: "A child with repaired VSD should have:", options: ["Regular cardiology follow‑up","No follow‑up","Only one visit","Only if symptoms"], ans: 0 }
+            ] },
+            prevention: { title: "Prevention & Family Education", next: "flashcards", questions: [
+                { q: "Which vitamin helps prevent congenital heart defects?", options: ["Vitamin C","Folic acid","Vitamin D","Vitamin B12"], ans: 1 },
+                { q: "Mothers with diabetes should aim for:", options: ["Strict glycemic control before and during pregnancy","High blood sugar","Weight loss only","Low folic acid"], ans: 0 },
+                { q: "Endocarditis prophylaxis is usually NOT needed for isolated VSD except:", options: ["Within 6 months of patch closure","All patients","Only adults","Only with murmur"], ans: 0 },
+                { q: "The mnemonic W.H.A.L.E. helps parents remember:", options: ["Weight, Heart failure signs, Alertness, Lung infections, Energy","Wear a helmet, Hold, Avoid, Leave, Eat","None"], ans: 0 },
+                { q: "Which immunization is especially important for infants with large VSD?", options: ["RSV prophylaxis (palivizumab)","MMR","HepB","Rotavirus"], ans: 0 }
+            ] },
+            flashcards: { title: "Flashcards & Mnemonics", next: "final_quiz_sec", questions: [
+                { q: "Most common congenital heart defect?", options: ["ASD","VSD","PDA","TOF"], ans: 1 },
+                { q: "Classic murmur of VSD?", options: ["Hologystolic at left lower sternal border","Mid‑diastolic","Continuous","Systolic ejection"], ans: 0 },
+                { q: "Gold standard diagnostic test?", options: ["Echocardiogram","Chest X‑ray","ECG","MRI"], ans: 0 },
+                { q: "Mnemonic for parent teaching?", options: ["W.H.A.L.E.","C.A.R.E.","F.A.S.T.","H.E.L.P."], ans: 0 },
+                { q: "Which medication is used for heart failure in VSD?", options: ["Furosemide (Lasix)","Amoxicillin","Paracetamol","Ibuprofen"], ans: 0 }
+            ] }
+        };
+        // Build final 50-item exam
+        let finalQ = [];
+        for(let sec of ['simple','definition','pathophysiology','clinical','diagnosis','management','complications','prevention','flashcards']) {
+            if(quizzes[sec]) finalQ.push(...quizzes[sec].questions.slice(0,6));
+        }
+        while(finalQ.length < 50) finalQ.push({ q: "A large VSD with pulmonary hypertension and reversal of shunt is called:", options: ["Eisenmenger syndrome","Tetralogy of Fallot","Truncus arteriosus","Coarctation"], ans: 0 });
+        quizzes.final_quiz = { title: "Final 50-Item Exam: Ventricular Septal Defect (VSD)", next: null, questions: finalQ };
+
+        let unlockedSections = ['home'];
+        let vsdChart = null;
+
+        function initCharts() {
+            const ctx = document.getElementById('vsdChart')?.getContext('2d');
+            if(ctx && !vsdChart) {
+                vsdChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['VSD', 'ASD', 'PDA', 'TOF', 'CoA'],
+                        datasets: [{ label: 'Relative frequency among CHD (%)', data: [30, 10, 8, 5, 5], backgroundColor: '#e11d48', borderRadius: 6 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+                });
+            }
+        }
+
+        function toggleFlash(el) { const ans = el.querySelector('.flash-answer'); if(ans) ans.classList.toggle('hidden'); }
+        function unlockFirstSection() { if(!unlockedSections.includes('simple')) { unlockedSections.push('simple'); updateSidebarUI(); } showSection('simple'); }
+        function showSection(sectionId) {
+            if (!unlockedSections.includes(sectionId) && sectionId !== 'home') { alert("Complete the Active Recall Quiz at the bottom of the previous section to unlock."); return; }
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(sectionId)?.classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-vsd-light','text-vsd-dark','border-r-4','border-vsd-dark'));
+            const activeBtn = document.getElementById('btn-'+sectionId);
+            if(activeBtn) activeBtn.classList.add('bg-vsd-light','text-vsd-dark','border-r-4','border-vsd-dark');
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+            if(sectionId === 'definition' && !vsdChart) setTimeout(initCharts, 50);
+        }
+        function updateSidebarUI() {
+            const sections = ['home','simple','definition','pathophysiology','clinical','diagnosis','management','complications','prevention','flashcards','final_quiz_sec'];
+            sections.forEach(sec => {
+                const btn = document.getElementById('btn-'+sec);
+                if(!btn) return;
+                const lock = btn.querySelector('.fa-lock'), icon = btn.querySelector('.nav-icon');
+                if(unlockedSections.includes(sec) || sec==='home') { btn.classList.remove('locked-section'); if(lock) lock.classList.add('hidden'); if(icon) icon.classList.remove('hidden'); }
+                else { btn.classList.add('locked-section'); if(lock) lock.classList.remove('hidden'); if(icon) icon.classList.add('hidden'); }
+            });
+        }
+        let currentQuiz=null;
+        function openQuiz(sectionId) { currentQuiz = sectionId; const qd = quizzes[sectionId]; if(!qd) return; document.getElementById('quiz-title').innerHTML = qd.title; const container = document.getElementById('quiz-questions-container'); container.innerHTML = ''; qd.questions.forEach((q, idx) => { let html = `<div class="bg-slate-50 p-4 rounded-xl mb-4"><p class="font-bold mb-3">${idx+1}. ${q.q}</p><div class="space-y-2">`; q.options.forEach((opt,oi) => { html += `<label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white cursor-pointer"><input type="radio" name="q${idx}" value="${oi}" class="form-radio text-vsd"><span>${opt}</span></label>`; }); html += `</div><div class="feedback-${idx} text-sm mt-2 hidden"></div></div>`; container.innerHTML += html; }); document.getElementById('quiz-submit-btn').classList.remove('hidden'); document.getElementById('quiz-result-container').classList.add('hidden'); document.getElementById('quiz-modal').classList.remove('hidden'); }
+        function closeQuiz() { document.getElementById('quiz-modal').classList.add('hidden'); }
+        function submitQuiz() {
+            const qd = quizzes[currentQuiz];
+            if(!qd) return;
+            let score = 0;
+            for(let i=0; i<qd.questions.length; i++) {
+                const sel = document.querySelector(`input[name="q${i}"]:checked`);
+                if(sel && parseInt(sel.value)===qd.questions[i].ans) score++;
+                const fbDiv = document.querySelector(`.feedback-${i}`);
+                if(fbDiv){
+                    fbDiv.classList.remove('hidden');
+                    const correctTxt = qd.questions[i].options[qd.questions[i].ans];
+                    if(sel && parseInt(sel.value)===qd.questions[i].ans) { fbDiv.innerHTML='<span class="text-green-700">✓ Correct</span>'; fbDiv.parentElement?.classList.add('quiz-feedback-correct'); }
+                    else { const selectedTxt = sel? qd.questions[i].options[parseInt(sel.value)]:"No answer"; fbDiv.innerHTML=`<span class="text-red-700">✗ Incorrect. Correct: ${correctTxt}. You answered: ${selectedTxt}</span>`; fbDiv.parentElement?.classList.add('quiz-feedback-wrong'); }
+                }
+            }
+            let percent = (score/qd.questions.length)*100;
+            let resultDiv = document.getElementById('quiz-result-container');
+            document.getElementById('quiz-submit-btn').classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            if(percent>=75){
+                if(currentQuiz==='final_quiz'){ resultDiv.innerHTML=`<div class="text-green-600 text-4xl text-center">🎉 Excellent! Score ${score}/${qd.questions.length} (${percent}%)<br>You mastered VSD!</div><button onclick="closeQuiz()" class="mt-4 bg-vsd text-white px-6 py-2 rounded-xl">Close</button>`; return; }
+                if(quizzes[currentQuiz].next && !unlockedSections.includes(quizzes[currentQuiz].next)) unlockedSections.push(quizzes[currentQuiz].next);
+                if(quizzes[currentQuiz].next === 'flashcards' && !unlockedSections.includes('final_quiz_sec')) unlockedSections.push('final_quiz_sec');
+                updateSidebarUI();
+                resultDiv.innerHTML=`<div class="text-green-600 text-3xl text-center">✅ Passed! (${score}/${qd.questions.length})</div><button onclick="closeQuiz(); showSection('${quizzes[currentQuiz].next}')" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-xl">Unlock Next Section</button>`;
+            } else { resultDiv.innerHTML=`<div class="text-red-600 text-3xl text-center">❌ Failed: ${score}/${qd.questions.length} (${percent}%)<br>Need 75%</div><button onclick="openQuiz('${currentQuiz}')" class="mt-4 bg-slate-600 text-white px-6 py-2 rounded-xl">Try Again</button>`; }
+        }
+        function toggleRecallMode() { const active = !document.body.classList.contains('recall-mode'); const toggle=document.getElementById('recall-toggle'),knob=document.getElementById('recall-knob'); if(active){ document.body.classList.add('recall-mode'); toggle.classList.add('bg-vsd-dark'); knob.classList.add('translate-x-6'); } else { document.body.classList.remove('recall-mode'); toggle.classList.remove('bg-vsd-dark'); knob.classList.remove('translate-x-6'); } }
+        function toggleMobileMenu() { const s=document.getElementById('sidebar'); if(s.classList.contains('hidden')) s.classList.remove('hidden','flex','absolute','h-full','z-50'); else s.classList.add('hidden'); }
+        document.addEventListener('DOMContentLoaded', () => { updateSidebarUI(); document.querySelectorAll('.reveal-text').forEach(el => el.addEventListener('click', function(){ if(document.body.classList.contains('recall-mode')) this.classList.toggle('revealed'); })); });
+    </script>
+</body>
+</html>
